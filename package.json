@@ -1,0 +1,24 @@
+{
+  "name": "mellonine",
+  "version": "0.1.0",
+  "description": "Dial friend and enter",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/stuartpb/mellonine.git"
+  },
+  "keywords": [
+    "twilio",
+    "telephone"
+  ],
+  "author": "Stuart P. Bentley <stuart@testtrack4.com>",
+  "license": "BSD",
+  "dependencies": {
+    "envigor": "~0.4.1",
+    "express": "~3.2.6",
+    "twilio": "~1.1.2"
+  }
+}
