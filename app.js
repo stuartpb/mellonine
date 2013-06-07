@@ -8,7 +8,7 @@ function playTones(twiml,tones){
     tones = tones.toString().split('');
   }
   
-  for(var i = 0; i < tones.length; tones++){
+  for(var i = 0; i < tones.length; i++){
     var tone = tones[i];
     twiml.play('/dtmf/'
       + (tone == '#' ? 'pound' : tone == '*' ? 'star' : tone)
