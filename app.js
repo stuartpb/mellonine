@@ -29,7 +29,7 @@ module.exports = function(cfg){
   
   app.use(express.bodyParser());
   app.use(express.favicon());
-  app.use(express.static('/dtmf',__dirname+'/dtmf'));
+  app.use('/dtmf',express.static(__dirname+'/dtmf'));
   
   app.get('/incoming',function(req,res){
     // respond with tones for verifying number to Google Voice
