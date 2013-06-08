@@ -2,19 +2,19 @@ var express = require('express');
 var twilio = require('twilio');
 
 function playTones(twiml,tones){
-  
+
   //allow array, string, and number input
   if(!Array.isArray(tones)){
     tones = tones.toString().split('');
   }
-  
+
   for(var i = 0; i < tones.length; i++){
     var tone = tones[i];
     twiml.play('/dtmf/'
       + (tone == '#' ? 'pound' : tone == '*' ? 'star' : tone)
       + '.wav');
   }
-  
+
   return twiml;
 }
 
@@ -26,22 +26,26 @@ function playToneResponse(res,tones){
 
 module.exports = function(cfg){
   var app = express();
-  
+
   app.use(express.bodyParser());
   app.use(express.favicon());
   app.use('/dtmf',express.static(__dirname+'/dtmf'));
-  
+
   app.get('/',function(req,res){
     // respond with tones for verifying number to Google Voice
-    if(process.env.RESPOND_TONES) {
+    if (process.env.RESPOND_TONES) {
       playToneResponse(res,process.env.RESPOND_TONES);
     } else {
-      res.type('text/xml').send(new twilio.TwimlResponse()
-        .gather({
+      var resTwiml = new twilio.TwimlResponse();
+      if (process.env.ANSWER_WAIT) {
+        resTwiml.pause(process.env.ANSWER_WAIT);
+      }
+      resTwiml.gather({
           timeout: process.env.PASSCODE_ENTRY_TIMEOUT || 5
         }, function(twiml){
           twiml.say('Enter the passcode, followed by pound');
-        }).toString());
+        });
+      res.type('text/xml').send(resTwiml.toString());
     }
   });
 
@@ -55,8 +59,8 @@ module.exports = function(cfg){
         .toString());
     }
   });
-  
+
   app.use(function(req,res){return res.send(404)});
-  
+
   return app;
 };
