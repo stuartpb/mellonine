@@ -31,7 +31,7 @@ module.exports = function(cfg){
   app.use(express.favicon());
   app.use('/dtmf',express.static(__dirname+'/dtmf'));
   
-  app.get('/incoming',function(req,res){
+  app.get('/',function(req,res){
     // respond with tones for verifying number to Google Voice
     if(process.env.RESPOND_TONES) {
       playToneResponse(res,process.env.RESPOND_TONES);
@@ -45,16 +45,18 @@ module.exports = function(cfg){
     }
   });
 
-  app.post('/incoming',function(req,res){
+  app.post('/',function(req,res){
     console.log(req.body);
     if (req.body.Digits == process.env.PASSCODE_DIGITS) {
-      playToneResponse(res,9);
+      playToneResponse(res, process.env.SUCCESS_DIGITS || 9);
     } else {
       res.type('text/xml').send(new twilio.TwimlResponse()
         .say('Passcode not recognized')
         .toString());
     }
   });
+  
+  app.use(function(req,res){return res.send(404)});
   
   return app;
 };
