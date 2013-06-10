@@ -2,12 +2,12 @@ var express = require('express');
 var twilio = require('twilio');
 
 function playTones(twiml,tones){
-
+  
   //allow array, string, and number input
   if(!Array.isArray(tones)){
     tones = tones.toString().split('');
   }
-
+  
   for(var i = 0; i < tones.length; i++){
     var tone = tones[i];
     twiml.play('/dtmf/'
@@ -55,7 +55,9 @@ module.exports = function(cfg){
       playToneResponse(res, process.env.SUCCESS_DIGITS || 9);
     } else {
       res.type('text/xml').send(new twilio.TwimlResponse()
-        .say('Passcode not recognized')
+        .say('Passcode '
+          + req.body.Digits.split('').join(' ')
+          + ' not recognized')
         .toString());
     }
   });
