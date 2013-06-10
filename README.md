@@ -56,9 +56,6 @@ apartment building.
 - `PASSCODE_ENTRY_TIMEOUT`: How many seconds to wait until gathering all
   entered input as the passcode. If this variable isn't set, the Twilio default
   of 5 seconds will be used.
-- `RESPOND_TONES`: If set, rather than gathering a passcode, the app will
-  respond to incoming calls by playing this specified sequence of digit tones
-  and then hanging up. This is used for setting up Google Voice (see below).
 - `ANSWER_WAIT`: If set, the app will wait for the number of seconds
   specified before picking up the call. This can be used in a scenario like
   Google Voice, where multiple phones can be configured to ring for a call
@@ -68,16 +65,21 @@ apartment building.
 ## Setting up Google Voice
 
 1. Go to https://www.google.com/voice#phones and click "Add a number".
-2. Once the number has been added and Google says you need to verify your
+2. Go to your Twilio number's configuration, set it to use URLs and not
+   applications, and set the Voice Request URL to
+   http://tempanswer.herokuapp.com/incoming (POST).
+3. Once the number has been added and Google says you need to verify your
    phone, start the process. When given the number that you will need to dial
-   to verify your phone, set the `RESPOND_TONES` variable in the app's
-   configuration environment to that number, then press "Connect".
-3. Once Google Voice succesfully verifies your number, unset the
-   `RESPOND_TONES` variable (and uncheck the box that marks this number for
-   general call forwarding).
-4. Add the number the building's security system calls from to your Google
+   to verify your phone, go to http://tempanswer.herokuapp.com/,
+   enter your Twilio phone number and the two-digit confirmation code Google
+   Voice is displaying that it will prompt for, then press "Connect" on the
+   Google Voice screen.
+4. Once Google Voice succesfully verifies your number, uncheck the box that
+   marks the new phone for general call forwarding on Google Voice.
+5. Configure your Twilio number to point to mellonine again.
+6. Add the number the building's security system calls from to your Google
    Contacts, and add it to a group exclusively for calling your Twilio number.
-5. On https://www.google.com/voice#groups , edit the settings for the group
+7. On https://www.google.com/voice#groups , edit the settings for the group
    that you just set up for calling your Twilio number. Under "When people in
    this group call you: Ring my:", uncheck all phones on your account other
    than your Twilio number. Also make sure that call screening is Off.

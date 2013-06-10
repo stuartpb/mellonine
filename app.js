@@ -33,20 +33,16 @@ module.exports = function(cfg){
 
   app.get('/',function(req,res){
     // respond with tones for verifying number to Google Voice
-    if (process.env.RESPOND_TONES) {
-      playToneResponse(res,process.env.RESPOND_TONES);
-    } else {
-      var resTwiml = new twilio.TwimlResponse();
-      if (process.env.ANSWER_WAIT) {
-        resTwiml.pause(process.env.ANSWER_WAIT);
-      }
-      resTwiml.gather({
-          timeout: process.env.PASSCODE_ENTRY_TIMEOUT || 5
-        }, function(twiml){
-          twiml.say('Enter the passcode, followed by pound');
-        });
-      res.type('text/xml').send(resTwiml.toString());
+    var resTwiml = new twilio.TwimlResponse();
+    if (process.env.ANSWER_WAIT) {
+      resTwiml.pause(process.env.ANSWER_WAIT);
     }
+    resTwiml.gather({
+        timeout: process.env.PASSCODE_ENTRY_TIMEOUT || 5
+      }, function(twiml){
+        twiml.say('Enter the passcode, followed by pound');
+      });
+    res.type('text/xml').send(resTwiml.toString());
   });
 
   app.post('/',function(req,res){
