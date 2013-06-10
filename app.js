@@ -50,7 +50,6 @@ module.exports = function(cfg){
   });
 
   app.post('/',function(req,res){
-    console.log(req.body);
     if (req.body.Digits == process.env.PASSCODE_DIGITS) {
       playToneResponse(res, process.env.SUCCESS_DIGITS || 9);
     } else {
