@@ -40,7 +40,7 @@ module.exports = function(cfg){
     resTwiml.gather({
         timeout: process.env.PASSCODE_ENTRY_TIMEOUT || 5
       }, function(twiml){
-        twiml.say('Enter the passcode, followed by pound');
+        twiml.say('Enter the passcode');
       });
     res.type('text/xml').send(resTwiml.toString());
   });
