@@ -60,7 +60,8 @@ module.exports = function(cfg) {
   app.post('/',function(req,res,next) {
     bcrypt.hash(req.body.passcode, 10, function(err, passhash) { 
       if (err) return next(err);
-      var hfields = [req.body.appsid + ' config', 'passhash', passhash];
+      var hfields = [req.body.accsid + rec.body.number + ' config',
+        'passhash', passhash];
       for (var i=0; i < configvars.length; i++) {
         hfields.push(configvars[i]);
         hfields.push(req.body[configvars[i]]);
@@ -75,13 +76,13 @@ module.exports = function(cfg) {
   });
 
   app.post('/incoming/voice',function(req,res, next){
-    var appsid = req.body.ApplicationSid;
+    var cid = req.body.AccountSid + req.body.To;
     var fields = ['sleep', 'prompt', 'unlockTone',
       'gatherTimeout', 'finishOnKey', 'numDigits'];
     
     db.multi()
-      .hmget([appsid + ' config'].concat(fields))
-      .get(appsid + ' unlocked')
+      .hmget([cid + ' config'].concat(fields))
+      .get(cid + ' unlocked')
       .exec(function (err, dbres) {
         if (err) return next(err);
         var hfo = objectify(fields, dbres[0]);
@@ -113,8 +114,8 @@ module.exports = function(cfg) {
   });
 
   app.post('/incoming/voice/digits', function (req, res, next) {
-    var appsid = req.body.ApplicationSid;
-    db.hmget([appsid + ' config', 'passhash', 'unlockTones'],
+    var cid = req.body.AccountSid + req.body.To;
+    db.hmget([cid + ' config', 'passhash', 'unlockTones'],
       function (err, hvalues) {
         
       if (err) return next(err);
@@ -134,16 +135,15 @@ module.exports = function(cfg) {
   });
 
   app.post('/incoming/sms',function(req,res,next){
-    var appsid = req.body.ApplicationSid;
-    db.hmget([appsid + ' config', 'passhash', 'smsttl'],
+    var cid = req.body.AccountSid + req.body.To;
+    db.hmget([cid + ' config', 'passhash', 'smsttl'],
       function(err,hvalues) {
         
       if (err) return next(err);
-      console.log(req.body)
       bcrypt.compare(req.body.Body, hvalues[0], function (err, passmatch) {
         if (err) return next(err);
         if (passmatch) {
-          db.setex(appsid + ' unlocked', hvalues[1], req.body.From,
+          db.setex(cid + ' unlocked', hvalues[1], req.body.From,
             function (err, status) {
               
             if (err) return next(err);
