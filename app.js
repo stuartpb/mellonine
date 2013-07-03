@@ -139,10 +139,10 @@ module.exports = function(cfg) {
       function(err,hvalues) {
         
       if (err) return next(err);
-      bcrypt.compare(req.body.Digits, hvalues[0], function (err, passmatch) {
+      bcrypt.compare(req.body.Body, hvalues[0], function (err, passmatch) {
         if (err) return next(err);
         if (passmatch) {
-          db.setex(appsid + ' unlocked', hvalues[1], req.body.Caller,
+          db.setex(appsid + ' unlocked', hvalues[1], req.body.From,
             function (err, status) {
               
             if (err) return next(err);
@@ -153,7 +153,9 @@ module.exports = function(cfg) {
           });
         } else {
           res.type('text/plain').send(
-            'Passcode ' + req.body.Digits + ' not recognized');
+            'Passcode "' + req.body.Body.slice(0,100)
+              + (req.body.Body.length > 100 ? '...' : '')
+              + '" not recognized');
         }
       });
     });
