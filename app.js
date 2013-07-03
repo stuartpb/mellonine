@@ -3,6 +3,9 @@ var twilio = require('twilio');
 var redis = require('redis');
 var bcrypt = require('bcrypt');
 
+var impossibleHash =
+  '$2a$10$00000000000000000000000000000000000000000000000000000';
+
 function playTones(twiml,tones) {
   
   //allow array, string, and number input
@@ -60,7 +63,7 @@ module.exports = function(cfg) {
   app.post('/',function(req,res,next) {
     bcrypt.hash(req.body.passcode, 10, function(err, passhash) { 
       if (err) return next(err);
-      var hfields = [req.body.accsid + rec.body.number + ' config',
+      var hfields = [req.body.accsid + req.body.number + ' config',
         'passhash', passhash];
       for (var i=0; i < configvars.length; i++) {
         hfields.push(configvars[i]);
@@ -93,7 +96,7 @@ module.exports = function(cfg) {
         if (dbres[1]) {
           // since we don't really care about the success/failure of this
           // command that much, we run it without a callback
-          db.del(appsid + ' unlocked');
+          db.del(cid + ' unlocked');
           playTones(resTwiml,hfo.unlockTone);
         } else {
           var gatherattrs = {
@@ -119,7 +122,9 @@ module.exports = function(cfg) {
       function (err, hvalues) {
         
       if (err) return next(err);
-      bcrypt.compare(req.body.Digits, hvalues[0], function (err, passmatch) {
+      bcrypt.compare(req.body.Digits, hvalues[0] || impossibleHash, 
+        function (err, passmatch) {
+          
         if (err) return next(err);
         if (passmatch) {
           playToneResponse(res, hvalues[1]);
@@ -140,7 +145,9 @@ module.exports = function(cfg) {
       function(err,hvalues) {
         
       if (err) return next(err);
-      bcrypt.compare(req.body.Body, hvalues[0], function (err, passmatch) {
+      bcrypt.compare(req.body.Body, hvalues[0] || impossibleHash,
+        function (err, passmatch) {
+          
         if (err) return next(err);
         if (passmatch) {
           db.setex(cid + ' unlocked', hvalues[1], req.body.From,
