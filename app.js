@@ -139,7 +139,7 @@ module.exports = function(cfg) {
       function(err,hvalues) {
         
       if (err) return next(err);
-      console.log(appsid,req.body.Body,hvalues[0])
+      console.log(req.body)
       bcrypt.compare(req.body.Body, hvalues[0], function (err, passmatch) {
         if (err) return next(err);
         if (passmatch) {
