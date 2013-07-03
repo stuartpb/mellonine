@@ -157,7 +157,7 @@ module.exports = function(cfg) {
             //if no err let's just assume the status is OK or otherwise fine
             else return res.type('text/plain').send(
               'Door will unlock automatically in the next '
-                + hvalues[1] + 'seconds');
+                + hvalues[1] + ' seconds');
           });
         } else {
           res.type('text/plain').send(
