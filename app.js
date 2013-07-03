@@ -118,7 +118,7 @@ module.exports = function(cfg) {
 
   app.post('/incoming/voice/digits', function (req, res, next) {
     var cid = req.body.AccountSid + req.body.To;
-    db.hmget([cid + ' config', 'passhash', 'unlockTones'],
+    db.hmget([cid + ' config', 'passhash', 'unlockTone'],
       function (err, hvalues) {
         
       if (err) return next(err);
