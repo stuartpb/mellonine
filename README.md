@@ -25,71 +25,10 @@ The name comes from "mellon", the Elvish word for friend that opens the doors
 to the Mines of Moria, and "nine", the DTMF digit that opens the doors to my
 apartment building.
 
-## Setting up the app
-
-1. Host the app somewhere Internet-accessible. I personally use Heroku, but you
-   can also use Nodejitsu or any other hosting provider that can serve
-   Node apps written for [twelve-factor methodology](http://12factor.net/).
-2. Set the appropriate environment variables for your instance according to
-   the "Configuration" section below.
-3. Create a Twilio account at https://twilio.com, if you haven't already, and
-   set a number to receive incoming calls.
-4. Set the number to request the root path of your app (eg.
-   http://mellonine.herokuapp.com/ ) with the 'GET' method for incoming calls.
-5. Set your tenant number in the apartment building's security system to your
-   Twilio number.
-   - If you already have a number in the system that's tied to a Google Voice
-     account, you can set your account up to forward calls from the security
-     system to the Twilio number. See "Setting up Google Voice" below.
-
 ## Configuration
 
-- `PORT`: The port the app should listen to requests on. Services like Heroku
-  set this variable automatically.
-- `PASSCODE_DIGITS`: The passcode people should enter to gain access (eg.
-  '12345'). Note that while this app doesn't place any limit on passcode
-  lengths, some security systems (including the one my building uses) stop
-  recognizing key presses after a certain number of tones have been played, so
-  that may be a limiting factor.
-- `SUCCESS_DIGITS`: The number to dial on successful passcode entry. If this
-  variable isn't set, '9' will be used by default.
-- `PASSCODE_ENTRY_TIMEOUT`: How many seconds to wait until gathering all
-  entered input as the passcode. If this variable isn't set, the Twilio default
-  of 5 seconds will be used.
-- `ANSWER_WAIT`: If set, the app will wait for the number of seconds
-  specified before picking up the call. This can be used in a scenario like
-  Google Voice, where multiple phones can be configured to ring for a call
-  simultaneously, to allow the other phones a period of time in which they can
-  pick up the call.
-
-## Setting up Google Voice
-
-1. Go to https://www.google.com/voice#phones and click "Add a number".
-2. Go to your Twilio number's configuration, set it to use URLs and not
-   applications, and set the Voice Request URL to
-   http://tempanswer.herokuapp.com/incoming (POST).
-3. Once the number has been added and Google says you need to verify your
-   phone, start the process. When given the number that you will need to dial
-   to verify your phone, go to http://tempanswer.herokuapp.com/,
-   enter your Twilio phone number and the two-digit confirmation code Google
-   Voice is displaying that it will prompt for, then press "Connect" on the
-   Google Voice screen.
-4. Once Google Voice succesfully verifies your number, uncheck the box that
-   marks the new phone for general call forwarding on Google Voice.
-5. Configure your Twilio number to point to mellonine again.
-6. Add the number the building's security system calls from to your Google
-   Contacts, and add it to a group exclusively for calling your Twilio number.
-7. On https://www.google.com/voice#groups , edit the settings for the group
-   that you just set up for calling your Twilio number. Under "When people in
-   this group call you: Ring my:", uncheck all phones on your account other
-   than your Twilio number. Also make sure that call screening is Off.
-
-## Roadmap
-
-Right now, this is only configured to serve access to my own apartment:
-however, with a bit of tweaking, it could be changed to serve access for any
-number of Twilio accounts and/or numbers concurrently, with a different
-passcode configurable for each.
+mellonine uses [envigor](https://github.com/stuartpb/envigor) configuration for
+**port** and **redis**.
 
 ## Application security
 

@@ -1,0 +1,56 @@
+extends layout
+
+block content
+  h1 mellonine
+  h2
+  p.
+  
+  h2 Usage
+  h3 Step 1
+  p.
+    <a href="https://www.twilio.com/user/account/apps/add">Create a Twilio app</a> with the
+    Voice Request URL set to http://mellonine.herokuapp.com/incoming/voice (POST)
+    and the SMS request url to http://mellonine.herokuapp.com/incoming/sms (POST).
+  h3 Step 2
+  p.
+    Enter the SID listed for the application you've created, and a passcode to
+    unlock the door for that application. You may use any string as a passcode,
+    but if your passcode contains characters other that digits, '*', or '#',
+    you will only be able to enter it via SMS (all attempts to dial it when
+    prompted will fail).
+  p.
+    NOTE: Some security systems may silence touch tones after a certain length.
+    Also, Twilio thinks my apartment's '#' sounds like '3'.
+    Keep these flaws / features in mind (you may wish to test your own system's
+    behavior for such limitations).
+  form(method="POST")
+    label="App SID: "
+      input(type="text",name='appsid',placeholder='AP0123456789abcdef0123456789abcdef',pattern="AP[0-9a-f]{32}")
+    label="Passcode: "
+      input(type="text",name='passcode',maxlength=160)
+    fieldset
+      legend Options
+      div
+        label="SMS unlock expires after: "
+          input(type="number",name='smsttl',min=0,step=1,value=300)
+          =" seconds"
+      div
+        label="Voice prompt: "
+          input(type="text",name='prompt',value="Enter the passcode")
+      fieldset
+        legend Passcode dialing
+          label="Timeout: "
+            input(type="number",name='gatherTimeout',min=0,step=1,value=5)
+            =" seconds"
+          label="Submit key: "
+            input(type="text",name='finishOnKey',pattern="[\\d\\#\\*]?")
+          label="Max length: "
+            input(type="number",name='numDigits',min=1,step=1)
+      div
+        label="Wait before picking up: "
+          input(type="number",name='sleep',min=0,step=1,value=0)
+          =" seconds"
+      div
+        label="Unlock tone: "
+          input(type="text",name='unlockTone',pattern="[\\d\\#\\*]+",value='9')
+    input(type="Submit")

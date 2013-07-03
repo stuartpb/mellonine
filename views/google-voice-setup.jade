@@ -1,0 +1,41 @@
+extends layout
+
+block content
+  h1 mellonine
+  h2 Setting Up Google Voice for Mellonine
+  h3 Step 1
+  p.
+    Go to <a href="https://www.google.com/voice#phones">https://www.google.com/voice#phones</a>
+    and click "Add a number".
+  h3 Step 2
+  p.
+    Go to your Twilio number's configuration, set it to use URLs and not
+    applications, and set the Voice Request URL to
+    http://tempanswer.herokuapp.com/incoming (POST).
+  h3 Step 3
+  p.
+    Once the number has been added and Google says you need to verify your
+    phone, start the process. When given the number that you will need to dial
+    to verify your phone, go to a href="http://tempanswer.herokuapp.com/">http://tempanswer.herokuapp.com/</a>,
+    submit your Twilio phone number and the two-digit confirmation code Google
+    Voice is displaying that it will prompt for. Once the tempanswer countdown
+    is showing that it is now set to respond with your given code, press
+    "Connect" on the Google Voice screen.
+  h3 Step 4
+  p.
+    Once Google Voice succesfully verifies your number, uncheck the box that
+    marks the new phone for general call forwarding on Google Voice.
+  h3 Step 5
+  p.
+    Configure your Twilio number to point to mellonine again.
+  h3 Step 6
+  p.
+    Add the number the building's security system calls from to your Google
+    Contacts, and add it to a group exclusively for calling your Twilio number.
+  h3 Step 7
+  p.
+    On a href="https://www.google.com/voice#groups">https://www.google.com/voice#groups</a>,
+    edit the settings for the group that you just set up for calling your
+    Twilio number. Under "When people in this group call you: Ring my:",
+    uncheck all phones on your account other than your Twilio number. Also make
+    sure that call screening is Off.
