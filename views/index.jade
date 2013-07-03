@@ -39,13 +39,13 @@ block content
           input(type="text",name='prompt',value="Enter the passcode")
       fieldset
         legend Passcode dialing
-        label="Timeout: "
-          input(type="number",name='gatherTimeout',min=0,step=1,value=5)
-          =" seconds"
         label="Submit key: "
           input(type="text",name='finishOnKey',pattern="[\\d\\#\\*]?")
         label="Max length: "
           input(type="number",name='numDigits',min=1,step=1)
+        label="Timeout: "
+          input(type="number",name='gatherTimeout',min=0,step=1,value=5)
+          =" seconds"
       div
         label="Wait before picking up: "
           input(type="number",name='sleep',min=0,step=1,value=0)
