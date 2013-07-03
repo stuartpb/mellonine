@@ -1,6 +1,6 @@
 {
   "name": "mellonine",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Dial friend and enter",
   "main": "app.js",
   "scripts": {
