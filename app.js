@@ -98,6 +98,7 @@ module.exports = function(cfg) {
           var gatherattrs = {
             timeout: hfo.gatherTimeout || 5,
             finishOnKey: hfo.finishOnKey || '',
+            action: '/incoming/voice/digits'
           };
           
           if (hfo.numDigits) gatherattrs.numDigits = hfo.numDigits;
