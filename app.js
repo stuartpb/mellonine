@@ -173,17 +173,21 @@ module.exports = function appctor(cfg) {
     var bcryptPasshash = req.query.bcryptPasshash;
     var unlockToken = req.query.unlockToken;
     var passcode = req.query.passcode;
-    var ttl = req.query.ttl;
+    var ttl = req.query.ttl || 300;
 
     function evaluate(err,passmatch) {
       if (err) return next(err);
 
       // If the passcode matches
       if (passmatch) {
+        if(!unlockToken) {
+          return res.type('text/plain')
+            .send("Can't unlock without unlockToken");
+        }
 
         // Set a record in the database marking that the door is unlocked,
         // expiring after the unlock duration is up
-        db.setex('unlock/'+unlockToken, ttl, req.body.From,
+        db.setex('unlock/'+unlockToken, ttl, req.body.From || '',
           function (err, status) {
 
           if (err) return next(err);
@@ -209,7 +213,7 @@ module.exports = function appctor(cfg) {
     }
 
     if (bcryptPasshash) bcrypt.compare(req.body.Body, evaluate);
-    else evaluate(null, passcode == req.body.Body);
+    else evaluate(null, passcode && passcode == req.body.Body);
   }
   app.get('/sms', smsRoute);
   app.post('/sms', smsRoute);
