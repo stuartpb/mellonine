@@ -49,7 +49,7 @@ module.exports = function appctor(cfg) {
 
   function voiceRoute (req, res, next) {
     var unlockToken = req.query.unlockToken;
-    var unlockTone = req.query.unlockTone || '9';
+    var unlockTone = req.query.unlockTone;
     var sleep = req.query.sleep;
     var gatherTimeout = req.query.gatherTimeout || 5;
     var finishOnKey = req.query.finishOnKey || '';
@@ -85,6 +85,13 @@ module.exports = function appctor(cfg) {
       // passcode entry and unlock immediately
       } else {
 
+        var actionParams = [];
+        ["bcryptPasshash","passcode","unlockTone"].forEach(function(param){
+          if (req.query[param]) actionParams.push(param + '='
+            + encodeURIComponent(req.query[param]));
+          });
+        var actionUrl = '/digits?' + actionParams.join('&');
+
         // The options/attributes of the Gather TwiML verb that gathers
         // the passcode
         var gatherattrs = {
@@ -96,7 +103,7 @@ module.exports = function appctor(cfg) {
           finishOnKey: finishOnKey,
 
           // Where to POST the results to.
-          action: '/digits' + require('url').parse(req.url).search
+          action: actionUrl
         };
 
         // If there's a maximum number of digits set to gather,
