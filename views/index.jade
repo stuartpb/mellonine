@@ -119,7 +119,7 @@ html
 
       for (var i = 0; i < inputs.length; i++) {
         var input = inputs[i];
-        input.addEventListener(input.type == "text" ? "keyup" : "change",
-          updateState);
+        input.addEventListener("keyup",updateState);
+        input.addEventListener("change",updateState);
       }
 
