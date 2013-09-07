@@ -97,7 +97,7 @@ html
         if (doorcode)
           voiceParams.push('passcode=' + encodeURIComponent(doorcode));
 
-        if (sleep) voiceParams.push('sleep=' + encodeURIComponent(sleep));
+        if (sleep > 0) voiceParams.push('sleep=' + encodeURIComponent(sleep));
         if (prompt) voiceParams.push('prompt=' + encodeURIComponent(prompt));
         if (finishOnKey) voiceParams.push('finishOnKey=' + encodeURIComponent(finishOnKey));
         if (numDigits) voiceParams.push('numDigits=' + encodeURIComponent(numDigits));
