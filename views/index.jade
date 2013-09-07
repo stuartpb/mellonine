@@ -24,13 +24,13 @@ html
       Keep these flaws / features in mind (you may wish to test your own system's
       behavior for such limitations).
     fieldset
-      legend Configuration
-      label="Door passcode: "
-        input#doorcode(type="text",pattern="[\\d\\#\\*]+")
-      label="SMS passcode: "
-        input#smscode(type="text",maxlength=160)
+      legend Generator
       fieldset#options
         legend Options
+        label="Door passcode: "
+          input#doorcode(type="text",pattern="[\\d\\#\\*]+")
+        label="SMS passcode: "
+          input#smscode(type="text",maxlength=160)
         div
           label="Unlock token identifier: "
             input#unlock-token(type="text")
@@ -57,12 +57,12 @@ html
         div
           label="Unlock tone: "
             input#unlock-tone(type="text",pattern="[\\d\\#\\*]+",placeholder='9')
-    fieldset
-      legend Resulting URLs
-        p
-          a#voice-url(href="https://mellonine.herokuapp.com/voice?") https://mellonine.herokuapp.com/voice?
-        p
-          a#sms-url(href="https://mellonine.herokuapp.com/sms?") https://mellonine.herokuapp.com/sms?
+      fieldset
+        legend Resulting URLs
+          p
+            a#voice-url(href="https://mellonine.herokuapp.com/voice?") https://mellonine.herokuapp.com/voice?
+          p
+            a#sms-url(href="https://mellonine.herokuapp.com/sms?") https://mellonine.herokuapp.com/sms?
     script.
       function updateState() {
         function getval(id) {return document.getElementById(id).value}
