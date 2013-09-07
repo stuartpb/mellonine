@@ -135,6 +135,7 @@ module.exports = function appctor(cfg) {
 
   // The route for responding to passcodes.
   function digitsRoute (req, res, next) {
+    var digits = req.body.Digits || '';
 
     var bcryptPasshash = req.query.bcryptPasshash;
     var passcode = req.query.passcode;
@@ -160,7 +161,7 @@ module.exports = function appctor(cfg) {
         resTwiml.say('Passcode '
           // (inserting a space between each digit so Twilio reads it
           // as a sequence of digits rather than one number)
-          + req.body.Digits.split('').join(' ')
+          + digits.split('').join(' ')
           + ' not recognized');
       }
 
@@ -176,6 +177,7 @@ module.exports = function appctor(cfg) {
 
   // The route for responding to SMS messages.
   function smsRoute (req, res, next) {
+    var body = req.body.Body || '';
 
     var bcryptPasshash = req.query.bcryptPasshash;
     var unlockToken = req.query.unlockToken;
@@ -213,8 +215,8 @@ module.exports = function appctor(cfg) {
         // really long) back to the user and tell them it wasn't recognized
         // as the correct passcode
         res.type('text/plain').send(
-          'Passcode "' + req.body.Body.slice(0,100)
-            + (req.body.Body.length > 100 ? '...' : '')
+          'Passcode "' + body.slice(0,100)
+            + (body.length > 100 ? '...' : '')
             + '" not recognized');
       }
     }
