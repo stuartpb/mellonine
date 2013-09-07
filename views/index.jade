@@ -83,26 +83,26 @@ html
         document.getElementById('smscode').placeholder = doorcode;
 
         if (unlockToken && (doorcode || smscode)) {
-          voiceParams.push('unlockToken=' + encodeURIFragment(unlockToken));
-          smsParams.push('unlockToken=' + encodeURIFragment(unlockToken));
+          voiceParams.push('unlockToken=' + encodeURIComponent(unlockToken));
+          smsParams.push('unlockToken=' + encodeURIComponent(unlockToken));
 
           // Only add parameters to the SMS URL if they'll be in a
           // valid state to be used.
-          if (ttl) smsParams.push('ttl=' + encodeURIFragment(ttl));
+          if (ttl) smsParams.push('ttl=' + encodeURIComponent(ttl));
 
           smsParams.push('passcode=' +
-            encodeURIFragment(smscode ? smscode : doorcode));
+            encodeURIComponent(smscode ? smscode : doorcode));
         }
 
         if (doorcode)
-          voiceParams.push('passcode=' + encodeURIFragment(doorcode));
+          voiceParams.push('passcode=' + encodeURIComponent(doorcode));
 
-        if (sleep) voiceParams.push('sleep=' + encodeURIFragment(sleep));
-        if (prompt) voiceParams.push('prompt=' + encodeURIFragment(prompt));
-        if (finishOnKey) voiceParams.push('finishOnKey=' + encodeURIFragment(finishOnKey));
-        if (numDigits) voiceParams.push('numDigits=' + encodeURIFragment(numDigits));
-        if (gatherTimeout != 5) voiceParams.push('gatherTimeout=' + encodeURIFragment(gatherTimeout));
-        if (unlockTone) voiceParams.push('unlockTone=' + encodeURIFragment(unlockTone));
+        if (sleep) voiceParams.push('sleep=' + encodeURIComponent(sleep));
+        if (prompt) voiceParams.push('prompt=' + encodeURIComponent(prompt));
+        if (finishOnKey) voiceParams.push('finishOnKey=' + encodeURIComponent(finishOnKey));
+        if (numDigits) voiceParams.push('numDigits=' + encodeURIComponent(numDigits));
+        if (gatherTimeout != 5) voiceParams.push('gatherTimeout=' + encodeURIComponent(gatherTimeout));
+        if (unlockTone) voiceParams.push('unlockTone=' + encodeURIComponent(unlockTone));
 
         var voiceUrl = "https://mellonine.herokuapp.com/voice?" + voiceParams.join('&');
         var smsUrl = "https://mellonine.herokuapp.com/sms?" + smsParams.join('&');
