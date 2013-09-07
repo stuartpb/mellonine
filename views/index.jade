@@ -1,58 +1,125 @@
-extends layout
+!!!
+html
+  head
+    meta(charset="utf-8")
+    title Mellonine
+    style.
+      body {font-family: sans-serif}
+  body
+    h2 What is Mellonine?
+    p.
+      Mellonine is a Twimlet-style Twilio app that handles calls and texts.
+    p.
+      It's not a purely stateless app, as SMS messages can set a token that
 
-block content
-  h1 mellonine
-  h2
-  p.
-  
-  h2 Usage
-  h3 Step 1
-  p.
-    <a href="https://www.twilio.com/user/account/apps/add">Create a Twilio app</a> with the
-    Voice Request URL set to https://mellonine.herokuapp.com/incoming/voice (POST)
-    and the SMS request url to https://mellonine.herokuapp.com/incoming/sms (POST).
-  h3 Step 2
-  p.
-    Enter the number you're using and your account SID, and a passcode to
-    unlock the door for that application. You may use any string as a passcode,
-    but if your passcode contains characters other that digits, '*', or '#',
-    you will only be able to enter it via SMS (all attempts to dial it when
-    prompted will fail).
-  p.
-    NOTE: Some security systems may silence touch tones after a certain length.
-    Also, Twilio thinks my apartment's '#' sounds like '3'.
-    Keep these flaws / features in mind (you may wish to test your own system's
-    behavior for such limitations).
-  form(method="POST")
-    label="Number: "
-      input(type="tel",name='number',placeholder='+18085551234',pattern="\\+\\d+")
-    label="Account SID: "
-      input(type="text",name='accsid',placeholder='AC0123456789abcdef0123456789abcdef',pattern="AC[0-9a-f]{32}")
-    label="Passcode: "
-      input(type="text",name='passcode',maxlength=160)
+
+    h2 How to use Mellonine
+    p.
+      Use this form to construct the URLs to direct your app to. (For more
+      in-depth documentation, view the
+      <a href="https://github.com/stuartpb/mellonine/blob/master/app.js">source</a>.)
+    p.
+      NOTE: Some security systems may silence touch tones after a certain length.
+      Also, Twilio thinks my apartment's '#' sounds like '3'.
+      Keep these flaws / features in mind (you may wish to test your own system's
+      behavior for such limitations).
     fieldset
-      legend Options
-      div
-        label="SMS unlock expires after: "
-          input(type="number",name='smsttl',min=0,step=1,value=300)
-          =" seconds"
-      div
-        label="Voice prompt: "
-          input(type="text",name='prompt',value="Enter the passcode")
-      fieldset
-        legend Passcode dialing
-        label="Submit key: "
-          input(type="text",name='finishOnKey',pattern="[\\d\\#\\*]?")
-        label="Max length: "
-          input(type="number",name='numDigits',min=1,step=1)
-        label="Timeout: "
-          input(type="number",name='gatherTimeout',min=0,step=1,value=5)
-          =" seconds"
-      div
-        label="Wait before picking up: "
-          input(type="number",name='sleep',min=0,step=1,value=0)
-          =" seconds"
-      div
-        label="Unlock tone: "
-          input(type="text",name='unlockTone',pattern="[\\d\\#\\*]+",value='9')
-    input(type="Submit")
+      legend Configuration
+      label="Door passcode: "
+        input#doorcode(type="text",pattern="[\\d\\#\\*]+")
+      label="SMS passcode: "
+        input#smscode(type="text",maxlength=160)
+      fieldset#options
+        legend Options
+        div
+          label="Unlock token identifier: "
+            input#unlock-token(type="text")
+        div
+          label="SMS unlock expires after: "
+            input#ttl(type="number",min=0,step=1,value=300)
+            =" seconds"
+        div
+          label="Voice prompt: "
+            input#prompt(type="text",placeholder="Enter the passcode")
+        fieldset
+          legend Passcode dialing
+          label="Submit key: "
+            input#finish-on-key(type="text",pattern="[\\d\\#\\*]?")
+          label="Max length: "
+            input#num-digits(type="number",min=1,step=1)
+          label="Timeout: "
+            input#gather-timeout(type="number",min=0,step=1,value=5)
+            =" seconds"
+        div
+          label="Wait before picking up: "
+            input#sleep(type="number",min=0,step=1,value=0)
+            =" seconds"
+        div
+          label="Unlock tone: "
+            input#unlock-tone(type="text",pattern="[\\d\\#\\*]+",placeholder='9')
+    fieldset
+      legend Resulting URLs
+        p
+          a#voice-url(href="https://mellonine.herokuapp.com/voice?") https://mellonine.herokuapp.com/voice?
+        p
+          a#sms-url(href="https://mellonine.herokuapp.com/sms?") https://mellonine.herokuapp.com/sms?
+    script.
+      function updateState() {
+        function getval(id) {return document.getElementById(id).value}
+        var doorcode = getval('doorcode');
+        var smscode = getval('smscode');
+        var ttl = getval('ttl');
+        var prompt = getval('prompt');
+        var finishOnKey = getval('finish-on-key');
+        var numDigits = getval('num-digits');
+        var gatherTimeout = getval('gather-timeout');
+        var sleep = getval('sleep');
+        var unlockTone = getval('unlock-tone');
+        var unlockToken = getval('unlock-token');
+
+        var voiceParams = [];
+        var smsParams = [];
+
+        document.getElementById('smscode').placeholder = doorcode;
+
+        if (unlockToken && (doorcode || smscode)) {
+          voiceParams.push('unlockToken=' + encodeURIFragment(unlockToken));
+          smsParams.push('unlockToken=' + encodeURIFragment(unlockToken));
+
+          // Only add parameters to the SMS URL if they'll be in a
+          // valid state to be used.
+          if (ttl) smsParams.push('ttl=' + encodeURIFragment(ttl));
+
+          smsParams.push('passcode=' +
+            encodeURIFragment(smscode ? smscode : doorcode));
+        }
+
+        if (doorcode)
+          voiceParams.push('passcode=' + encodeURIFragment(doorcode));
+
+        if (sleep) voiceParams.push('sleep=' + encodeURIFragment(sleep));
+        if (prompt) voiceParams.push('prompt=' + encodeURIFragment(prompt));
+        if (finishOnKey) voiceParams.push('finishOnKey=' + encodeURIFragment(finishOnKey));
+        if (numDigits) voiceParams.push('numDigits=' + encodeURIFragment(numDigits));
+        if (gatherTimeout != 5) voiceParams.push('gatherTimeout=' + encodeURIFragment(gatherTimeout));
+        if (unlockTone) voiceParams.push('unlockTone=' + encodeURIFragment(unlockTone));
+
+        var voiceUrl = "https://mellonine.herokuapp.com/voice?" + voiceParams.join('&');
+        var smsUrl = "https://mellonine.herokuapp.com/sms?" + smsParams.join('&');
+
+        var voiceUrlElement = document.getElementById('voice-url');
+        voiceUrlElement.href = voiceUrl;
+        voiceUrlElement.textContent = voiceUrl;
+        var smsUrlElement = document.getElementById('sms-url');
+        smsUrlElement.href = smsUrl;
+        smsUrlElement.textContent = smsUrl;
+      }
+
+      var inputs = document.getElementById(options).getElementsByTagName('input');
+
+      for (var i = 0; i < inputs.length; i++) {
+        var input = inputs[i];
+        input.addEventListener(input.type == "text" ? keyup : change,
+          updateState);
+      }
+
