@@ -3,11 +3,6 @@ var twilio = require('twilio');
 var redis = require('redis');
 var bcrypt = require('bcrypt');
 
-// A bcrypt hash that no input will yield (for timing purposes, so invalid
-// requests take just as long to fail as valid ones).
-var impossibleHash =
-  '$2a$10$00000000000000000000000000000000000000000000000000000';
-
 // Insert TwiML to the node given to play the given sequence of DTMF tones.
 function playTones(twiml,tones) {
 
@@ -47,19 +42,12 @@ module.exports = function appctor(cfg) {
   // Serve our DTMF tone .WAV files from /dtmf/
   app.use('/dtmf', express.static(__dirname+'/dtmf'));
 
-  // Paths for the main three user-facing pages.
+  // Render the landing page for configuration.
   app.get('/', function(req, res) {
     res.render('index.jade');
   });
-  app.get('/success', function (req, res){
-    res.render('success.jade');
-  });
-  app.get('/google-voice-setup', function (req, res) {
-    res.render('google-voice-setup.jade');
-  });
 
-  // The route for recieving a call from Twilio.
-  app.post('/voice',function(req, res, next){
+  function voiceRoute (req, res, next) {
     var unlockToken = req.query.unlockToken;
     var unlockTone = req.query.unlockTone || '9';
     var sleep = req.query.sleep;
@@ -108,7 +96,7 @@ module.exports = function appctor(cfg) {
           finishOnKey: finishOnKey,
 
           // Where to POST the results to.
-          action: '/digits' + require('url').parse(req.url).query
+          action: '/digits' + require('url').parse(req.url).search
         };
 
         // If there's a maximum number of digits set to gather,
@@ -125,15 +113,21 @@ module.exports = function appctor(cfg) {
       res.type('text/xml').send(resTwiml.toString());
     }
 
-    // Get the configuration fields we need for our response from the database,
-    // and check at the same time to see if the door is currently unlocked
-    // (via SMS) to see if we should prompt for the passcode
+    // If the request includes an SMS token we should check for,
+    // check to see if the door is currently unlocked (via SMS)
+    // to see if we should immediately unlock instead of prompting
+    // for the passcode
     if (unlockToken) db.get('unlock/'+unlockToken, respond);
+    // If there's no token, just prompt for the passcode
     else respond();
-  });
+  }
+
+  // The route for recieving a call from Twilio.
+  app.get('/voice',voiceRoute);
+  app.post('/voice',voiceRoute);
 
   // The route for responding to passcodes.
-  app.post('/digits', function (req, res, next) {
+  function digitsRoute (req, res, next) {
 
     var bcryptPasshash = req.query.bcryptPasshash;
     var passcode = req.query.passcode;
@@ -168,11 +162,13 @@ module.exports = function appctor(cfg) {
     }
 
     if (bcryptPasshash) bcrypt.compare(req.body.Digits, evaluate);
-    else evaluate(null,passcode == req.body.Digits);
-  });
+    else evaluate(null, passcode == req.body.Digits);
+  }
+  app.get('/digits', digitsRoute);
+  app.post('/digits', digitsRoute);
 
   // The route for responding to SMS messages.
-  app.post('/sms', function (req, res, next) {
+  function smsRoute (req, res, next) {
 
     var bcryptPasshash = req.query.bcryptPasshash;
     var unlockToken = req.query.unlockToken;
@@ -213,8 +209,10 @@ module.exports = function appctor(cfg) {
     }
 
     if (bcryptPasshash) bcrypt.compare(req.body.Body, evaluate);
-    else evaluate(null,passcode == req.body.Body);
-  });
+    else evaluate(null, passcode == req.body.Body);
+  }
+  app.get('/sms', smsRoute);
+  app.post('/sms', smsRoute);
 
   // Respond with a 404 code for any other requests
   app.use(function(req,res){return res.send(404)});
