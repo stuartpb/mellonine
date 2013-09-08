@@ -5,6 +5,13 @@ html
     title Mellonine
     style.
       body {font-family: sans-serif}
+      input {
+        border: 1px solid gray;
+        padding: 2px;
+      }
+      input:invalid {
+        background-color: #fdd;
+      }
   body
     h2 What is Mellonine?
     p.
@@ -45,7 +52,7 @@ html
         fieldset
           legend Passcode dialing
           label="Submit key: "
-            input#finish-on-key(type="text",pattern="[\\d\\#\\*]?")
+            input#finish-on-key(type="text",pattern="[\\d\\#\\*]?",maxlength=1)
           label="Max length: "
             input#num-digits(type="number",min=1,step=1)
           label="Timeout: "
