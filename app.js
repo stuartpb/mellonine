@@ -49,7 +49,7 @@ module.exports = function appctor(cfg) {
 
   function voiceRoute (req, res, next) {
     var unlockToken = req.query.unlockToken;
-    var unlockTone = req.query.unlockTone;
+    var unlockTone = req.query.unlockTone || '9';
     var sleep = req.query.sleep;
     var gatherTimeout = req.query.gatherTimeout || 5;
     var finishOnKey = req.query.finishOnKey || '';
