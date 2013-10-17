@@ -78,6 +78,8 @@ module.exports = function appctor(cfg) {
           // completed successfully and without errors, play the tone
           // sequence that unlocks the door
           playTones(resTwiml,unlockTone);
+
+          // Send the response we've built to Twilio
           res.type('text/xml').send(resTwiml.toString());
         });
 
@@ -114,10 +116,10 @@ module.exports = function appctor(cfg) {
         resTwiml.gather(gatherattrs, function (twiml) {
           twiml.say(prompt);
         });
-      }
 
-      // Send the response we've built to Twilio
-      res.type('text/xml').send(resTwiml.toString());
+        // Send the response we've built to Twilio
+        res.type('text/xml').send(resTwiml.toString());
+      }
     }
 
     // If the request includes an SMS token we should check for,
