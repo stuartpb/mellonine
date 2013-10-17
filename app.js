@@ -67,7 +67,7 @@ module.exports = function appctor(cfg) {
       if (sleep) resTwiml.pause(sleep);
 
       // If the door is currently "unlocked"
-      if (unlock) {
+      if (unlock !== null) {
 
         // Re-lock the door by deleting the unlock record
         db.del('unlock/'+unlockToken, function (err, status) {
