@@ -12,6 +12,10 @@ html
       input:invalid {
         background-color: #fdd;
       }
+      .note {
+        font-style: italic;
+        color: gray;
+      }
   body
     h2 What is Mellonine?
     p.
@@ -72,6 +76,8 @@ html
           a#voice-url(href="https://mellonine.herokuapp.com/voice?") https://mellonine.herokuapp.com/voice?
         p
           a#sms-url(href="https://mellonine.herokuapp.com/sms?") https://mellonine.herokuapp.com/sms?
+          =' '
+          span#no-token.note (no unlock token)
     script.
       function updateState() {
         function getval(id) {return document.getElementById(id).value}
@@ -122,6 +128,8 @@ html
         var smsUrlElement = document.getElementById('sms-url');
         smsUrlElement.href = smsUrl;
         smsUrlElement.textContent = smsUrl;
+
+        document.getElementById('no-token').hidden = !!unlockToken;
       }
 
       function generateRandomIdentifier() {
