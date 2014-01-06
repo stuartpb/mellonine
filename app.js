@@ -3,25 +3,6 @@ var twilio = require('twilio');
 var redis = require('redis');
 var bcrypt = require('bcrypt');
 
-// Insert TwiML to the node given to play the given sequence of DTMF tones.
-function playTones(twiml,tones) {
-
-  // allow array, string, and number input
-  if(!Array.isArray(tones)) {
-    tones = tones.toString().split('');
-  }
-
-  // Add a TwiML Play verb for each tone in the sequence.
-  for(var i = 0; i < tones.length; i++) {
-    var tone = tones[i];
-    twiml.play('/dtmf/'
-      + (tone == '#' ? 'pound' : tone == '*' ? 'star' : tone)
-      + '.wav');
-  }
-
-  return twiml;
-}
-
 // Construct the app based on the passed-in configuration parameters.
 module.exports = function appctor(cfg) {
 
@@ -38,9 +19,6 @@ module.exports = function appctor(cfg) {
 
   // Use the Connect favicon.
   app.use(express.favicon());
-
-  // Serve our DTMF tone .WAV files from /dtmf/
-  app.use('/dtmf', express.static(__dirname+'/dtmf'));
 
   // Render the landing page for configuration.
   app.get('/', function(req, res) {
@@ -77,7 +55,7 @@ module.exports = function appctor(cfg) {
           // Once we've gotten confirmation that the door re-lock has
           // completed successfully and without errors, play the tone
           // sequence that unlocks the door
-          playTones(resTwiml,unlockTone);
+          resTwiml.play({digits: unlockTone});
 
           // Send the response we've built to Twilio
           res.type('text/xml').send(resTwiml.toString());
@@ -153,7 +131,7 @@ module.exports = function appctor(cfg) {
       if (passmatch) {
 
         // Play the tone that unlocks the door
-        playTones(resTwiml, unlockTone);
+        resTwiml.play({digits: unlockTone});
 
       // If the passcode didn't match
       } else {
