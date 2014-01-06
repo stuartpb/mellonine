@@ -42,7 +42,7 @@ html
         div
           label="Unlock token identifier: "
             input#unlock-token(type="text")
-          button(onclick="generateRandomIdentifier()") Generate
+          button#generate-token(type="button") Generate
         div
           label="SMS unlock expires after: "
             input#ttl(type="number",min=0,step=1,value=300)
@@ -73,14 +73,6 @@ html
         p
           a#sms-url(href="https://mellonine.herokuapp.com/sms?") https://mellonine.herokuapp.com/sms?
     script.
-      function generateRandomIdentifier() {
-        document.getElementById('unlock-token').value =
-          Array.apply(0, Array(16)).map(function() {
-            return (function(charset){
-              return charset.charAt(Math.floor(Math.random() * charset.length))
-            }('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_'));
-        }).join('');
-      }
       function updateState() {
         function getval(id) {return document.getElementById(id).value}
         var doorcode = getval('doorcode');
@@ -132,11 +124,24 @@ html
         smsUrlElement.textContent = smsUrl;
       }
 
+      function generateRandomIdentifier() {
+        document.getElementById('unlock-token').value =
+          Array.apply(0, Array(16)).map(function() {
+            return (function(charset){
+              return charset.charAt(Math.floor(Math.random() * charset.length))
+            }('ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-_'));
+        }).join('');
+        updateState();
+      }
+
+      document.getElementById('generate-token')
+        .addEventListener("click", generateRandomIdentifier);
+
       var inputs = document.getElementById('options').getElementsByTagName('input');
 
       for (var i = 0; i < inputs.length; i++) {
         var input = inputs[i];
-        input.addEventListener("input",updateState);
+        input.addEventListener("input", updateState);
       }
 
       updateState();
