@@ -136,8 +136,7 @@ html
 
       for (var i = 0; i < inputs.length; i++) {
         var input = inputs[i];
-        input.addEventListener("keyup",updateState);
-        input.addEventListener("change",updateState);
+        input.addEventListener("input",updateState);
       }
 
       updateState();
