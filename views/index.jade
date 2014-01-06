@@ -68,10 +68,10 @@ html
             input#unlock-tone(type="text",pattern="[\\d\\#\\*]+",placeholder='9')
       fieldset
         legend Resulting URLs
-          p
-            a#voice-url(href="https://mellonine.herokuapp.com/voice?") https://mellonine.herokuapp.com/voice?
-          p
-            a#sms-url(href="https://mellonine.herokuapp.com/sms?") https://mellonine.herokuapp.com/sms?
+        p
+          a#voice-url(href="https://mellonine.herokuapp.com/voice?") https://mellonine.herokuapp.com/voice?
+        p
+          a#sms-url(href="https://mellonine.herokuapp.com/sms?") https://mellonine.herokuapp.com/sms?
     script.
       function generateRandomIdentifier() {
         document.getElementById('unlock-token').value =
