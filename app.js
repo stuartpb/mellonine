@@ -2,6 +2,8 @@ var express = require('express');
 var twilio = require('twilio');
 var redis = require('redis');
 var bcrypt = require('bcrypt');
+var bodyParser = require('body-parser');
+var serveFavicon = require('serve-favicon');
 
 // Construct the app based on the passed-in configuration parameters.
 module.exports = function appctor(cfg) {
@@ -15,14 +17,14 @@ module.exports = function appctor(cfg) {
   var app = express();
 
   // Parse incoming request bodies
-  app.use(express.bodyParser());
+  app.use(bodyParser());
 
   // Use the Connect favicon.
-  app.use(express.favicon());
+  app.use(serveFavicon());
 
   // Render the landing page for configuration.
   app.get('/', function(req, res) {
-    res.render('index.jade');
+    res.render('index.pug');
   });
 
   function voiceRoute (req, res, next) {
@@ -38,7 +40,7 @@ module.exports = function appctor(cfg) {
       if (err) return next(err);
 
       // Create our TwiML response.
-      var resTwiml = new twilio.TwimlResponse();
+      var resTwiml = new twilio.twiml.VoiceResponse();
 
       // If this client is configured to sleep before answering the call,
       // insert a pause at the top of the response so Twilio will wait.
@@ -125,7 +127,7 @@ module.exports = function appctor(cfg) {
       if (err) return next(err);
 
       // Create our TwiML response.
-      var resTwiml = new twilio.TwimlResponse();
+      var resTwiml = new twilio.twiml.VoiceResponse();
 
       // If the passcode matches
       if (passmatch) {

@@ -17,11 +17,13 @@
   "author": "Stuart P. Bentley <stuart@testtrack4.com>",
   "license": "BSD",
   "dependencies": {
-    "envigor": "~0.4.2",
-    "express": "~3.2.6",
-    "twilio": "~1.1.2",
-    "redis": "~0.8.3",
-    "bcrypt": "~0.7.5",
-    "jade": "~0.32.0"
+    "bcrypt": "^5.1.1",
+    "body-parser": "^2.2.0",
+    "envigor": "^0.10.0",
+    "express": "^5.1.0",
+    "pug": "^3.0.3",
+    "redis": "^4.7.0",
+    "serve-favicon": "^2.5.0",
+    "twilio": "^5.5.2"
   }
 }
