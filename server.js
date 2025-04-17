@@ -5,4 +5,4 @@ var cfg = require('envigor')();
   return app.listen(cfg.port || 3000,function() {
     console.log("Listening on port " + (cfg.port || '3000'));
   });
-})().error(console.error);
+})().catch(console.error);
