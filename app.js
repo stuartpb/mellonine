@@ -10,7 +10,6 @@ module.exports = async function appctor(cfg) {
   // Connect to Redis
   var db = redis.createClient({url: cfg.redis.url});
   await db.connect();
-  db.auth(cfg.redis.password);
 
   // Create the app
   var app = express();
