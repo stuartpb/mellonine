@@ -5,11 +5,11 @@ var bcrypt = require('bcrypt');
 var serveFavicon = require('serve-favicon');
 
 // Construct the app based on the passed-in configuration parameters.
-module.exports = function appctor(cfg) {
+module.exports = async function appctor(cfg) {
 
   // Connect to Redis
-  var db = redis.createClient(cfg.redis.port, cfg.redis.hostname,
-    {no_ready_check: true});
+  var db = redis.createClient({url: cfg.redis.url});
+  await db.connect();
   db.auth(cfg.redis.password);
 
   // Create the app
