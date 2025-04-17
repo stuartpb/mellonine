@@ -2,7 +2,6 @@ var express = require('express');
 var twilio = require('twilio');
 var redis = require('redis');
 var bcrypt = require('bcrypt');
-var bodyParser = require('body-parser');
 var serveFavicon = require('serve-favicon');
 
 // Construct the app based on the passed-in configuration parameters.
@@ -17,7 +16,8 @@ module.exports = function appctor(cfg) {
   var app = express();
 
   // Parse incoming request bodies
-  app.use(bodyParser());
+  app.use(express.json());
+  app.use(express.urlencoded());
 
   // Use the Connect favicon.
   app.use(serveFavicon());
