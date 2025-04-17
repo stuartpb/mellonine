@@ -20,7 +20,7 @@ module.exports = function appctor(cfg) {
   app.use(express.urlencoded());
 
   // Use the Connect favicon.
-  app.use(serveFavicon());
+  app.use(serveFavicon("favicon.png"));
 
   // Render the landing page for configuration.
   app.get('/', function(req, res) {
