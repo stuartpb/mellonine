@@ -73,9 +73,9 @@ html
       fieldset
         legend Resulting URLs
         p
-          a#voice-url(href="https://mellonine.herokuapp.com/voice?") https://mellonine.herokuapp.com/voice?
+          a#voice-url(href="https://mellonine/voice?") https://mellonine/voice?
         p
-          a#sms-url(href="https://mellonine.herokuapp.com/sms?") https://mellonine.herokuapp.com/sms?
+          a#sms-url(href="https://mellonine/sms?") https://mellonine/sms?
           =' '
           span#no-token.note (no unlock token)
     script.
@@ -119,8 +119,10 @@ html
         if (gatherTimeout != 5) voiceParams.push('gatherTimeout=' + encodeURIComponent(gatherTimeout));
         if (unlockTone) voiceParams.push('unlockTone=' + encodeURIComponent(unlockTone));
 
-        var voiceUrl = "https://mellonine.herokuapp.com/voice?" + voiceParams.join('&');
-        var smsUrl = "https://mellonine.herokuapp.com/sms?" + smsParams.join('&');
+        var origin = document.location.origin;
+
+        var voiceUrl = origin + "/voice?" + voiceParams.join('&');
+        var smsUrl = origin + "/sms?" + smsParams.join('&');
 
         var voiceUrlElement = document.getElementById('voice-url');
         voiceUrlElement.href = voiceUrl;
